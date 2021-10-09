@@ -14,6 +14,7 @@ pygmentsCodefences       = true
     favicon              = "sam.ico"
     homepage             = "main"                           # What to call the home page link, link will not be rendered if empty
     footerText           = "Hi, Tm Hmml"
+    useCDN               = false
 
 # Metadata for Open Graph and Twitter
     description          = "Hi"               # Max 160 characters show in search results
