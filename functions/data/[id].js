@@ -5,7 +5,7 @@ export async function onRequest({request, env, params}) {
 	let path = url.pathname
 	let {id} = params
 
-	if(id === undefined || !pathId.match(/^[a-z0-9-]+$/i)) {
+	if(id === undefined || !id.match(/^[a-z0-9-]+$/i)) {
 		return new Response('Invalid ID', {status: 400})
 	}
 
@@ -13,7 +13,7 @@ export async function onRequest({request, env, params}) {
 	// has its own state. `idFromName()` always returns the same ID when given the
 	// same string as input (and called on the same class), but never the same
 	// ID for two different strings (or for different classes).
-	let doId = env.COUNTERS.idFromName(pathId)
+	let doId = env.COUNTERS.idFromName(id)
 
 	// Construct the stub for the Durable Object using the ID.
 	// A stub is a client Object used to send messages to the Durable Object.
