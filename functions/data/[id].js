@@ -1,13 +1,11 @@
 import { DurableObject } from "cloudflare:workers"
 
-export async function onRequest({request, env}) {
+export async function onRequest({request, env, params}) {
 	let url = new URL(request.url)
 	let path = url.pathname
-	
-	// Get the :id segment
-	let pathId = path.split("/")[2] // 0 index is an empty string before the first '/', 1 is 'data', 2 is ':pathId'
+	let {id} = params
 
-	if(pathId === undefined || !pathId.match(/^[a-z0-9-]+$/i)) {
+	if(id === undefined || !pathId.match(/^[a-z0-9-]+$/i)) {
 		return new Response('Invalid ID', {status: 400})
 	}
 
@@ -15,11 +13,11 @@ export async function onRequest({request, env}) {
 	// has its own state. `idFromName()` always returns the same ID when given the
 	// same string as input (and called on the same class), but never the same
 	// ID for two different strings (or for different classes).
-	let id = env.COUNTERS.idFromName(pathId)
+	let doId = env.COUNTERS.idFromName(pathId)
 
 	// Construct the stub for the Durable Object using the ID.
 	// A stub is a client Object used to send messages to the Durable Object.
-	let stub = env.COUNTERS.get(id)
+	let stub = env.COUNTERS.get(doId)
 
 	// Send a request to the Durable Object using RPC methods, then await its response.
 	let count = null
@@ -34,7 +32,7 @@ export async function onRequest({request, env}) {
 			return new Response("Not found", { status: 404 })
 	}
 
-	return new Response(`Durable Object ${pathId} / ${id}, count: ${count}`)
+	return new Response(`Durable Object ${id} / ${doId}, count: ${count}`)
 }
 
 export class Counter extends DurableObject {
