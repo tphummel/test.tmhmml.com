@@ -9,6 +9,8 @@ export async function onRequest({request, env, params}) {
 		return new Response('Invalid ID', {status: 400})
 	}
 
+	console.log('id', id)
+
 	// Every unique ID refers to an individual instance of the Counter class that
 	// has its own state. `idFromName()` always returns the same ID when given the
 	// same string as input (and called on the same class), but never the same
