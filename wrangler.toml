@@ -1,0 +1,12 @@
+name = "clay"
+main = "src/index.js"
+compatibility_date = "2024-06-02"
+account_id = "7936a19a39b0aae1d9d9a29358969e04"
+
+[[durable_objects.bindings]]
+name = "COUNTERS"
+class_name = "Counter"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["Counter"]
