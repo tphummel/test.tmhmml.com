@@ -1,0 +1,45 @@
+{{ define "main" }}
+<h1>{{replace .Title "_" " " | title}}</h1>
+
+<p>{{ partial "breadcrumb.html" . }}</p>
+
+{{ with .Content }}
+<div>{{ . }}</div>
+{{ end }}
+
+<div>Count: {{ len .Data.Pages }}</div>
+
+{{ if or (eq .Type "release_years") (eq .Type "keywords") (eq .Type "collections") (eq .Type "genres") (eq .Type "ratings") (eq .Type "production_countries") (eq .Type "production_companies") (eq .Type "release_decades") }}
+
+<table>
+  <tr>
+    <td>Title</td>
+    <td>Release Year</td>
+    <td>Score</td>
+  </tr>
+
+  {{ range .Data.Pages.ByParam "release_date" }}
+    <tr>
+      <td><a href="{{ .RelPermalink }}">{{ .Title }}</a></td>
+      <td><a href="{{ with $.GetPage (printf "/release_years/%s" (index .Params.release_years 0)) }}{{ .RelPermalink}}{{end}}">{{ index .Params.release_years 0 }}</a></td>
+
+      {{ $mcWeights := mul .Params.metacritic.score .Params.metacritic.review_count }}
+      {{ $rtWeights := mul .Params.rotten_tomatoes.score .Params.rotten_tomatoes.review_count }}
+      {{ $totalReviews := add .Params.metacritic.review_count .Params.rotten_tomatoes.review_count }}
+      <td title="RT: {{ .Params.rotten_tomatoes.score }} ({{ .Params.rotten_tomatoes.review_count}}), MC: {{ .Params.metacritic.score }} ({{ .Params.metacritic.review_count}})">{{ lang.NumFmt 2 (div (add $mcWeights $rtWeights) (float $totalReviews)) }}</td>
+    </tr>
+
+  {{ end }}
+</table>
+
+{{ else }}
+
+<ul>
+  {{ range .Data.Pages }}
+    <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+  {{ end }}
+</ul>
+
+{{ end }}
+
+{{ end }}
