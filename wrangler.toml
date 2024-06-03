@@ -15,3 +15,4 @@ compatibility_date = "2021-11-02"
 [[durable_objects.bindings]]
 name = "COUNTERS"
 class_name = "Counter"
+script_name = "data/index.js"
