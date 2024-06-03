@@ -1,9 +1,8 @@
-baseurl                  = "https://hi.tmhmml.com"           # Your domain name
+baseurl                  = "https://hi-tmhmml-com.pages.dev"           # Your domain name
 languageCode             = "en-us"
 defaultContentLanguage   = "en"
 isMultilingual           = false
 title                    = "Hi"
-theme                    = "archie"
 pygmentsStyle            = "monokai"                        # https://help.farbox.com/pygments.html
 pygmentsCodefences       = true
 # googleAnalytics        = ""                               # Tracking code, eg. "UA-111111111-1"
