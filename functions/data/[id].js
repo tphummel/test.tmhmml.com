@@ -9,8 +9,6 @@ export async function onRequest({request, env, params}) {
 		return new Response('Invalid ID', {status: 400})
 	}
 
-	console.log('id', id)
-
 	// Every unique ID refers to an individual instance of the Counter class that
 	// has its own state. `idFromName()` always returns the same ID when given the
 	// same string as input (and called on the same class), but never the same
@@ -25,39 +23,19 @@ export async function onRequest({request, env, params}) {
 	let count = null
 	switch (request.method) {
 		case "POST":
-			count = await stub.increment()
+			count = (await stub.get("value")) || 0
 			break
 		case "GET":
-			count = await stub.getCounterValue()
+			count = (await stub.get("value")) || 0
+			count += 1
+			// You do not have to worry about a concurrent request having modified the value in storage.
+			// "input gates" will automatically protect against unwanted concurrency.
+			// Read-modify-write is safe.
+			await stub.put("value", count)
 			break
 		default:
 			return new Response("Not found", { status: 404 })
 	}
 
 	return new Response(`Durable Object ${id} / ${doId}, count: ${count}`)
-}
-
-export class Counter extends DurableObject {
-
-	async getCounterValue() {
-		let value = (await this.ctx.storage.get("value")) || 0
-		return value
-	}
-
-	async increment(amount = 1) {
-		let value = (await this.ctx.storage.get("value")) || 0
-		value += amount
-		// You do not have to worry about a concurrent request having modified the value in storage.
-		// "input gates" will automatically protect against unwanted concurrency.
-		// Read-modify-write is safe.
-		await this.ctx.storage.put("value", value)
-		return value
-	}
-
-	async decrement(amount = 1) {
-		let value = (await this.ctx.storage.get("value")) || 0
-		value -= amount
-		await this.ctx.storage.put("value", value)
-		return value
-	}
 }
